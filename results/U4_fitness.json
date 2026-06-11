@@ -1,0 +1,12 @@
+{
+  "user_id": "U4",
+  "domain": "fitness",
+  "metrics": {
+    "narrative_intensity": 0.5,
+    "behavioral_prominence": 0.37,
+    "calculated_delta": 0.13
+  },
+  "status": "SUCCESS",
+  "divergence_classification": "ALIGNED",
+  "evidence_summary": "Narrative and behavior are aligned."
+}

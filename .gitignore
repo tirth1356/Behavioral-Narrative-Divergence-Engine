@@ -1,0 +1,14 @@
+# Python environments
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# IDE files
+.vscode/
+.idea/
+.gemini/
+
+# My personal interview cheat sheet - do not commit this!
+demo_guide.md

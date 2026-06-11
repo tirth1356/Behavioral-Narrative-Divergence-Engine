@@ -1,0 +1,12 @@
+{
+  "user_id": "U1",
+  "domain": "sleep",
+  "metrics": {
+    "narrative_intensity": 0.5,
+    "behavioral_prominence": 0.41,
+    "calculated_delta": 0.09
+  },
+  "status": "SUCCESS",
+  "divergence_classification": "ALIGNED",
+  "evidence_summary": "Narrative and behavior are aligned."
+}

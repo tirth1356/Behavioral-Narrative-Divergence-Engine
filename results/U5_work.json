@@ -1,0 +1,12 @@
+{
+  "user_id": "U5",
+  "domain": "work",
+  "metrics": {
+    "narrative_intensity": null,
+    "behavioral_prominence": null,
+    "calculated_delta": null
+  },
+  "status": "INSUFFICIENT_EVIDENCE",
+  "divergence_classification": "INSUFFICIENT_EVIDENCE",
+  "evidence_summary": "Only 7 logs, 0 entries."
+}
