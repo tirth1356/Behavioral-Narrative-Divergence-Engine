@@ -1,55 +1,84 @@
-# Chronis Task B: Behavioral-Narrative Divergence Scoring
+# Behavioral-Narrative Divergence Engine (Task B)
+An automated, production-grade Python pipeline designed to calculate and categorize the mathematical gap between a user's tracked behavioral data (smartwatch logs) and their self-reported narrative (journal entries).
+The system relies on sentiment-aware semantic extraction and strict architectural guardrails to classify behavioral anomalies objectively, without ever generating subjective or characterological judgments.
 
-Hi there! Welcome to my submission for Task B of the Chronis Hiring Assessment. 
+---
 
-I built this pipeline to calculate the mathematical gap between what a user *says* they do (their journal text) and what they *actually* do (their smartwatch logs). More importantly, I designed it with strict structural safety to ensure it classifies psychological patterns without ever sounding judgmental or making characterological assumptions.
+## 🏗️ Architecture & Core Components
 
-## My Architectural Approach
+```
+┌─────────────────┐      ┌──────────────────┐      ┌──────────────────┐
+│   The Aligner   │ ───> │  The Classifier  │ ───> │  The Formatter   │
+│ (Groq/LLM & RM) │      │ (Abstention Gate)│      │(Structural Safety│
+└─────────────────┘      └──────────────────┘      └──────────────────┘
 
-I focused heavily on modularity and speed. Here is how I broke down the problem:
+```
 
-1. **The Aligner (`pipeline/aligner.py`)**: 
-   Initially, I used local semantic embeddings (Cosine Similarity) to score the journal text, but I quickly realized this had a major **"Sentiment Loophole"**. If a user wrote, *"I hate working out"*, the naive embeddings saw the keyword "workout" and scored it high for fitness! 
-   To fix this, I pivoted to an LLM extraction method using **Llama 3.1 8B via the Groq API**. I prompt the LLM to explicitly ignore negative sentiment and return a clean `0.0` to `1.0` score. To prevent this from being too slow, I implemented a **Batch Prompting** architecture that bundles an entire week of logs into a single JSON response, cutting API calls by 85%. I also use a `RobustScaler` to normalize the numeric behavioral data so extreme outliers don't ruin the math.
+### 1. The Aligner (`pipeline/aligner.py`)
 
-2. **The Classifier (`pipeline/classifier.py`)**:
-   This is where the math happens. I hardcoded strict mathematical boundaries to categorize the gap between Narrative and Behavior into the four canonical types (Overstatement, Understatement, Blind Spot, Aspiration Gap).
-   **Crucially, I built an Abstention Gate.** If a user doesn't have at least 7 days of logs and 3 journal entries, my system actively refuses to guess and outputs `INSUFFICIENT_EVIDENCE`. We shouldn't make psychological claims on sparse data.
+* **The Sentiment Loophole Fix:** Standard semantic embeddings mistake *"I hate working out"* as a high fitness commitment. This pipeline routes text to **Llama 3.1 8B (via the Groq API)** with strict prompting to isolate actual intensity and bypass negative sentiment.
+* **Batch Optimization:** Bundles an entire week of textual logs into a single JSON API payload, reducing external network calls by **85%**.
+* **Normalization:** Outliers in physical or digital metrics are managed using a `RobustScaler` to ensure behavioral inputs map cleanly to an intensity spectrum of **0.0 to 1.0**.
 
-3. **The Formatter (`pipeline/formatter.py`)**:
-   To guarantee **Structural Safety**, I locked the entire output into a strict JSON schema. The LLM does not write free-form diagnostic paragraphs (which could hallucinate judgmental medical claims). It only returns primitives, floats, and predefined string enums.
+### 2. The Classifier (`pipeline/classifier.py`)
 
-## How to Run My Code
+* **Divergence Typing:** Evaluates the mathematical delta between narrative focus ($N$) and behavioral reality ($B$) against strict, hardcoded conditional thresholds.
+* **The Abstention Gate:** Actively blocks premature profiling. If a target tracking window contains fewer than 7 days of logs or fewer than 3 narrative entries, the engine bypasses classification and explicitly outputs `INSUFFICIENT_EVIDENCE`.
 
-I designed this to be a fully automated, single-command pipeline. 
+### 3. The Formatter (`pipeline/formatter.py`)
 
-### 1. Install Dependencies
+* **Structural Safety:** To mathematically eliminate hallucinated or judgmental language (e.g., calling a user "lazy"), the final output layer enforces a strict JSON schema. The engine is structurally limited to primitives, floats, and pre-defined string enums.
+
+---
+
+## 🚀 Quick Start
+
+### 1. Installation
+
+Install core dependencies:
+
 ```bash
 pip install -r requirements.txt
+
 ```
 
-### 2. Set the API Key
-Because I am using Groq for the sentiment-aware extraction, you'll need to pass an API key. 
-**Windows PowerShell:**
+### 2. Configure Environment
+
+Set your Groq API key. If no key is provided, the pipeline gracefully defaults to a deterministic **Mock Mode** to ensure testability.
+
+* **Linux/macOS:**
+```bash
+export GROQ_API_KEY="your_api_key_here"
+
+```
+* **Windows (PowerShell):**
 ```powershell
 $env:GROQ_API_KEY="your_api_key_here"
-```
-*(If you run it without a key, I wrote a fallback mock mode so the pipeline still successfully executes deterministically).*
 
-### 3. Run the Pipeline
+```
+
+
+
+### 3. Execution
+
+Run the end-to-end execution script:
+
 ```bash
 python main.py
-```
-This single command will:
-1. Auto-generate the companion synthetic narrative dataset if it's missing.
-2. Run the full alignment and classification engine.
-3. Save the sterile JSON output evaluations across all domains into the `results/` folder.
 
-## Testing
-I wrote a `pytest` suite that mathematically proves the type-boundaries and tests that the Abstention Gate actively blocks sparse data.
+```
+
+This command automatically checks for missing data, generates a companion synthetic narrative dataset mapped to users `U1` through `U5`, triggers the processing pipeline, and outputs sterile evaluation profiles directly into the `results/` folder.
+
+---
+
+## 🧪 Testing & Validation
+
+A comprehensive `pytest` suite enforces the integrity of the math thresholds, mock fallbacks, and the logic of the Abstention Gate under sparse data environments:
+
 ```bash
 python -m pytest tests/test_pipeline.py
+
 ```
 
-## Deeper Dive
-If you'd like to understand the exact mathematical thresholds for my categories or the specific failure modes I documented during testing, please check out my `decisions.md` file!
+> 📄 **Deep Dive:** For an in-depth review of specific mathematical coordinate boundaries, structural refusal patterns, and documented system failure modes, see [decisions.md](https://www.google.com/search?q=./decisions.md).
